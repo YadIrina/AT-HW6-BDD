@@ -14,7 +14,7 @@ public class VerificationPage {
     }
 
     public DashboardPage validVerify(String verificationCode) {
-        codeField.setValue(verificationCode.getCode());
+        codeField.setValue(verificationCode);
         verifyButton.click();
         return new DashboardPage();
     }

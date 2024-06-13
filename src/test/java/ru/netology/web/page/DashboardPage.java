@@ -32,7 +32,7 @@ public class DashboardPage {
         return extractBalance(text);
     }
     public TransferPage selectCardForTransfer(DataHelper.CardInfo cardInfo) {
-        cards.findBy(Condition.attribute("data-test-id", cardInfo.getTestId())).$("button").click();
+        cards.findBy(Condition.attribute("data-test-id", cardInfo.getTestID())).$("button").click();
         return new TransferPage();
     }
     public void reloadDashboardPage() {

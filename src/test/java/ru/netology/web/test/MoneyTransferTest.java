@@ -1,10 +1,13 @@
 package ru.netology.web.test;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DataHelper;
 import ru.netology.web.page.DashboardPage;
 import ru.netology.web.page.LoginPage;
+import ru.netology.web.page.TransferPage;
+
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,6 +34,7 @@ public class MoneyTransferTest {
         firstCardBalance = dashboardPage.getCardBalance(0);
         secondCardBalance = dashboardPage.getCardBalance(1);
     }
+
     @Test
     void shouldTransferMoneyFromFirstToSecond() {
 
@@ -45,6 +49,31 @@ public class MoneyTransferTest {
         assertAll(() -> assertEquals(expectedBalanceFirstCard,
                         actualBalanceForFirstCard),
                 () -> assertEquals(expectedBalanceSecondCard, actualBalanceForSecondCard));
+    }
+
+    @Test
+    void shouldTransferMoneyFromSecondToFirst() {
+
+        int sum = generateValidAmount(secondCardBalance);
+        var expectedBalanceFirstCard = dashboardPage.getCardBalance(1) - sum;
+        var expectedBalanceSecondCard = dashboardPage.getCardBalance(0) + sum;
+        var TransferPage = dashboardPage.selectCardForTransfer(firstCardInfo);
+        dashboardPage = TransferPage.makeValidTransfer(String.valueOf(sum), secondCardInfo);
+        dashboardPage.reloadDashboardPage();
+        var actualBalanceForFirstCard = dashboardPage.getCardBalance(1);
+        var actualBalanceForSecondCard = dashboardPage.getCardBalance(0);
+        assertAll(() -> assertEquals(expectedBalanceFirstCard,
+                        actualBalanceForFirstCard),
+                () -> assertEquals(expectedBalanceSecondCard, actualBalanceForSecondCard));
+    }
+
+    @Test
+    void shouldErrorMassege() {
+        int sum = generateValidAmount(secondCardBalance);
+        var thirdCardInfo = get3CardInfo();
+        var TransferPage = dashboardPage.selectCardForTransfer(firstCardInfo);
+        dashboardPage = TransferPage.makeValidTransfer(String.valueOf(sum), thirdCardInfo);
+        TransferPage.findErrorMassage("Ошибка! Произошла ошибка");
     }
 
 }
